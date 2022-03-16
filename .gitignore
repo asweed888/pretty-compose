@@ -1,0 +1,4 @@
+.DS_Store
+.env
+*.sec.yml
+compose.d/.dist

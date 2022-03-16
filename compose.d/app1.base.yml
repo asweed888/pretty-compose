@@ -1,0 +1,12 @@
+version: "3"
+services:
+  app1:
+    image: alpine
+    restart: on-failure
+    environment:
+      TZ:
+      SERVICE_HOST:
+      SERVICE_DOMAIN:
+      SERVICE_URL: "${SERVICE_DOMAIN}/app1"
+      XENV: development
+    command: /bin/sh -c "while :; do sleep 10; done"

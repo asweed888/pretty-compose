@@ -1,0 +1,32 @@
+#!/bin/bash
+
+if [ ! -e ./.env ]; then
+    cp -f .env.orig .env
+fi
+
+if [ ! -e ./compose.d/.dist ]; then
+    mkdir ./compose.d/.dist
+fi
+
+. .env
+for line in `cat .env | grep -v -e '^\s*#' -e '^\s*$'`; do
+  eval "export $line"
+done
+
+ENABLE_YAML=(${ENABLE_YAML//:/ })
+
+rm -f ./compose.d/.dist/*.yml
+
+ymls=''
+for enable_yml in ${ENABLE_YAML[@]}; do
+  export namespace=enable_yml
+
+  src_path="$PWD/compose.d/${enable_yml}.yml"
+  dist_path="$PWD/compose.d/.dist/${enable_yml}.yml"
+  envsubst < $src_path > $dist_path
+
+  ymls="$ymls-f $dist_path "
+done
+
+echo $ymls
+eval "docker-compose $ymls $@"
